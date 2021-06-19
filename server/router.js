@@ -9,11 +9,11 @@ router
 
 router
   .route('/reviews/:id')
-    .get(controllers.getReviews)
+    .get(controllers.getReviewsById)
 
 router
   .route('/reviews')
-    .get(controllers.getReviewsById)
+    .get(controllers.getReviews)
 
 
 module.exports = router;

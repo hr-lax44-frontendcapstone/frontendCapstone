@@ -13,7 +13,7 @@ const controllers = {
   getReviews: (req, res) => {
     console.log(req);
     const config = {
-      headers: {Authorization: key.API_KEY},
+      headers: {Authorization: key},
       params: req.query
     };
     axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/reviews`, config)
@@ -22,7 +22,7 @@ const controllers = {
   },
   getReviewsById: (req, res) => {
     const config = {
-      headers: {Authorization: `${key.API_KEY}`}
+      headers: {Authorization: `${key}`}
     };
     console.log(req.params);
     let { id } = req.params;
