@@ -9,7 +9,6 @@ import Quantity from './Quantity.jsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Thumbs, Zoom } from 'swiper/core';
 
-
 import "swiper/swiper.min.css";
 import "swiper/components/navigation/navigation.min.css"
 import "swiper/components/thumbs/thumbs.min.css";
@@ -32,8 +31,7 @@ const key = require('/server/config/config.js');
 function MainProduct(props) {
   const [item, setItem] = useState({});
   const [features, setFeatures] = useState([]);
-  const [mainImage, setMainImage] = useState('');
-  const [subImages, setSubImages] = useState([]);
+  const [images, setImages] = useState([]);
   const [originalPrice, setOriginalPrice] = useState('');
   const [salePrice, setSalePrice] = useState('');
   const [availableStyles, setAvailableStyles] = useState([]);
@@ -46,6 +44,7 @@ function MainProduct(props) {
   const [selectedQuantity, setSelectedQuantity] = useState([]);
   const [sizeIndex, setSizeIndex] = useState('');
   const [shoppingCart, setShoppingCart] = useState([]);
+  const [imageModal, setImageModal] = useState(false);
   const [imageClickStatus, setImageClickStatus] = useState(false);
   const [soldOutStatus, setSoldOutStatus] = useState(false);
   const [activeStyle, setActiveStyle] = useState(0);
@@ -80,8 +79,13 @@ function MainProduct(props) {
       axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/products/${props.item.id}/styles`, config)
     ]);
     setFeatures(featureResponse.data.features);
-    setMainImage(imageStyleResponse.data.results[index].photos[index].url);
-    setSubImages(imageStyleResponse.data.results[index].photos);
+    if (imageStyleResponse.data.results[index].photos.length <= 1) {
+      setImages([{
+        "url": "https://media.tenor.com/images/cfc9293db9e7c64b16a0ba0195c167b2/tenor.png"
+      }])
+    } else {
+      setImages(imageStyleResponse.data.results[index].photos);
+    }
     setAvailableStyles(imageStyleResponse.data.results);
     setSelectedStyle(imageStyleResponse.data.results[index].name);
     setStyleId(imageStyleResponse.data.results[index].style_id);
@@ -92,7 +96,9 @@ function MainProduct(props) {
       setSalePrice(imageStyleResponse.data.results[0].sale_price);
     }
     getSizesAndQuantities(imageStyleResponse.data.results[index].skus);
+    setActiveStyle(index);
     setSelectedQuantity(['-']);
+    setSizeIndex(0);
   }, [props.item.id])
 
   const handleImageClick = (index) => {
@@ -101,8 +107,7 @@ function MainProduct(props) {
     };
     axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/products/${props.item.id}/styles`, config)
       .then(response => {
-        setMainImage(response.data.results[resultIndex].photos[index].url);
-        setSubImages(response.data.results[resultIndex].photos);
+        setImages(response.data.results[resultIndex].photos);
       })
   }
 
@@ -113,8 +118,7 @@ function MainProduct(props) {
     };
     axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/products/${props.item.id}/styles`, config)
       .then(response => {
-        setMainImage(response.data.results[index].photos[0].url);
-        setSubImages(response.data.results[index].photos);
+        setImages(response.data.results[index].photos);
         setStyleId(response.data.results[index].style_id);
         setSelectedStyle(response.data.results[index].name);
         setActiveStyle(index);
@@ -192,7 +196,7 @@ function MainProduct(props) {
             className="mySwiper2"
           >
             <div className=''>prev</div>
-            {subImages.map((image, index) =>
+            {images.map((image, index) =>
               <SwiperSlide key={index} tag='li'>
                 <img id='main_image' key={index} src={image.url} onClick={() => handleMainImageClick()} />
               </SwiperSlide>
@@ -202,13 +206,14 @@ function MainProduct(props) {
           <Swiper
             onSwiper={setThumbsSwiper}
             spaceBetween={5}
-            slidesPerView={7}
+            slidesPerView={5}
+            navigation={true}
             freeMode={true}
             watchSlidesVisibility={true}
             watchSlidesProgress={true}
             className="mySwiper"
           >
-            {subImages.map((image, index) =>
+            {images.map((image, index) =>
               <SwiperSlide key={index}>
                 <img className='sub_images' key={index} src={image.thumbnail_url} onClick={() => handleImageClick(index)} />
               </SwiperSlide>)}
@@ -225,7 +230,7 @@ function MainProduct(props) {
             className="mySwiper2"
             zoom={true}
           >
-            {subImages.map((image, index) =>
+            {images.map((image, index) =>
               <SwiperSlide key={index} tag='li'>
                 <img id='main_image_expanded' key={index} src={image.url} onClick={() => handleMainImageClick()} />
               </SwiperSlide>
@@ -240,7 +245,7 @@ function MainProduct(props) {
             watchSlidesProgress={true}
             className="mySwiper"
           >
-            {subImages.map((image, index) =>
+            {images.map((image, index) =>
               <SwiperSlide key={index}>
                 <img className='sub_images' key={index} src={image.thumbnail_url} onClick={() => handleImageClick(index)} />
               </SwiperSlide>)}
@@ -251,36 +256,40 @@ function MainProduct(props) {
   }
 
   return (
-    <div className='product_details'>
-      {zoomImageRender()}
-      <div id='col_style'>
-        <h5 style={{marginTop: 10}}>Category: {item.category}</h5>
-        <h1>{item.name}</h1>
-        {priceRender()}
-        <h4>Style > {selectedStyle}</h4>
-        <ul id='style_grid'>
-          {availableStyles.map((style, index) => <Styles style={style} key={index} index={index} onClick={handleStyleChange} activeStyle={activeStyle}/>)}
-        </ul>
-        {addToCartButtonRender()}
-        <div className='details'>
-          <h5>Work the Runway</h5>
-          <p>{item.description}</p>
-          <p>Style ID: {styleId}</p>
-        </div>
-        <div className='details'>
-          <h5> Details:</h5>
-          {features.map((feature, index) => <ProductFeatures feature={feature} key={index} />)}
-        </div>
-        <div className='social_media'>
-          <FacebookShareButton url={''}>
-            <FacebookIcon size={30} />
-          </FacebookShareButton>
-          <TwitterShareButton url={''}>
-            <TwitterIcon size={30} />
-          </TwitterShareButton>
-          <PinterestShareButton url={''}>
-            <PinterestIcon size={30} />
-          </PinterestShareButton>
+    <div>
+      <div id='product_wrapper'>
+        {zoomImageRender()}
+        <div id='col_style'>
+          <h5 style={{ marginTop: 10 }}>Category: {item.category}</h5>
+          <h1>{item.name}</h1>
+          {priceRender()}
+          <h4>Style > {selectedStyle}</h4>
+          <ul id='style_grid'>
+            {availableStyles.map((style, index) => <Styles style={style} key={index} index={index} onClick={handleStyleChange} activeStyle={activeStyle} />)}
+          </ul>
+          {addToCartButtonRender()}
+          <div className='details'>
+            <h5>Work the Runway</h5>
+            <p>{item.description}</p>
+            <p>Style ID: {styleId}</p>
+          </div>
+          <div className='details'>
+            <h5> Details:</h5>
+            {features.map((feature, index) => <ProductFeatures feature={feature} key={index} />)}
+          </div>
+
+          <div className='social_media'>
+            <h4>Share Me!</h4>
+            <FacebookShareButton url={''}>
+              <FacebookIcon style={{margin: '5px'}} size={40} round={true}/>
+            </FacebookShareButton>
+            <TwitterShareButton url={''}>
+              <TwitterIcon style={{margin: '5px'}} size={40} round={true}/>
+            </TwitterShareButton>
+            <PinterestShareButton url={''}>
+              <PinterestIcon style={{margin: '5px'}} size={40} round={true}/>
+            </PinterestShareButton>
+          </div>
         </div>
       </div>
     </div>

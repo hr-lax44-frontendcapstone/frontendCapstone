@@ -5,6 +5,7 @@ import keys from '../../../server/config/config.js'
 import StarRender from './productDetails/StarRender.jsx';
 import MainProduct from './productDetails/MainProduct.jsx';
 import QAMain from './Q&A/QAMain.jsx';
+import AboutUsModal from './productDetails/AboutUsModal.jsx';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
@@ -18,16 +19,30 @@ class App extends React.Component {
     super(props)
     this.state = {
       products: [],
-      selectedProductIndex: 0
+      selectedProductIndex: 0,
+      aboutUsOpen: false
     }
     this.selectProduct = this.selectProduct.bind(this);
     this.getProducts = this.getProducts.bind(this);
+    this.aboutUsClickHandle = this.aboutUsClickHandle.bind(this);
+    this.closeAboutUs = this.closeAboutUs.bind(this);
   }
 
   componentDidMount() {
     this.getProducts();
   }
 
+  aboutUsClickHandle () {
+    this.setState({
+      aboutUsOpen: true
+    });
+  }
+
+  closeAboutUs () {
+    this.setState({
+      aboutUsOpen: false
+    })
+  }
 
   getProducts () {
     axios.get('/api/products')
@@ -57,14 +72,17 @@ class App extends React.Component {
           <Container>
             <Nav>
               <Nav.Link>Home</Nav.Link>
-              <Nav.Link>Our Story</Nav.Link>
+              <Nav.Link onClick={e => this.aboutUsClickHandle(e)}>Our Story</Nav.Link>
+              <AboutUsModal show={this.state.AboutUsOpen} handleClose={e => this.closeAboutUs(e)}>
+                <h2>Hello!</h2>
+              </AboutUsModal>
               <NavDropdown title='Products' >
                 {this.state.products.map((item, index) => <NavDropdown.Item onClick={e => this.selectProduct(e)} id={index} key={item.id}>{item.name}</NavDropdown.Item>)}
               </NavDropdown>
             </Nav>
           </Container>
         </Navbar>
-        <MainProduct item={this.state.products[this.state.selectedProductIndex]} />
+        <MainProduct className='product_details' item={this.state.products[this.state.selectedProductIndex]} />
         <StarRender item={this.state.products[this.state.selectedProductIndex]} />
         <QAMain product={this.state.products[this.state.selectedProductIndex]} />
         <Reviews product={this.state.products[this.state.selectedProductIndex]} />
