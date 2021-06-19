@@ -8,12 +8,11 @@ router
     .get(controllers.getProducts)
 
 router
-  .route('/reviews/:id')
-    .get(controllers.getReviewsById)
-
-router
   .route('/reviews')
     .get(controllers.getReviews)
+
+router.route('/reviews/meta')
+  .get(controllers.getReviewsMeta)
 
 
 module.exports = router;
