@@ -42,12 +42,9 @@ var Reviews = (props) => {
   // This will only run on mount
   useEffect(() => {
     // Doing inital data load for componenet did mount
-    let config = {
-        headers: {Authorization: key}
-    }
-    axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/reviews?product_id=${productID}`, config)
+    axios.get(`http://localhost:3001/api/reviews?product_id=${productID}`)
       .then(responseReviews => {
-        axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/reviews/meta?product_id=${productID}`, config)
+        axios.get(`http://localhost:3001/api/reviews/meta?product_id=${productID}`)
           .then(responseReviewsMeta => {
             makeReviewsMeta(responseReviewsMeta.data)
             makeReviewsSortedByHelpfulness(sorters.sortReviewsByHelpfulness(responseReviews.data.results));

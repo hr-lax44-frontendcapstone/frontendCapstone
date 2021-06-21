@@ -20,16 +20,15 @@ const controllers = {
       .then(response => {res.status(200).send(response.data)})
       .catch(error => {res.status(404).send(error)});
   },
-  getReviewsById: (req, res) => {
+  getReviewsMeta: (req, res) => {
+    console.log(req);
     const config = {
-      headers: {Authorization: `${key}`}
+      headers: {Authorization: key},
+      params: req.query
     };
-    console.log(req.params);
-    let { id } = req.params;
-    console.log(id);
-    axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/reviews/?product_id=${id}`, config)
+    axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-lax/reviews/meta`, config)
       .then(response => {res.status(200).send(response.data)})
-      .catch(error => {res.status(405).send(error)})
+      .catch(error => {res.status(404).send(error)});
   }
 }
 
