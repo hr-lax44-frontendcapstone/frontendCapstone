@@ -269,12 +269,12 @@ function MainProduct(props) {
           </ul>
           {addToCartButtonRender()}
           <div className='details'>
-            <h5>Work the Runway</h5>
+            <h4>Work the Runway</h4>
             <p>{item.description}</p>
             <p>Style ID: {styleId}</p>
           </div>
           <div className='details'>
-            <h5> Details:</h5>
+            <h4> Details:</h4>
             {features.map((feature, index) => <ProductFeatures feature={feature} key={index} />)}
           </div>
 
