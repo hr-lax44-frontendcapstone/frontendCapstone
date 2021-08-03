@@ -47,7 +47,6 @@ function Answer(props) {
         ({!markedHelpful ? props.answer.helpfulness : props.answer.helpfulness + 1})
         |
         <button className="link-button" onClick={() => {report(props.id); setReportAnswer(true)}}>{(reportAnswer) ? 'Reported' : 'Report'}</button>
-        {/* <button className="link-button" onClick={() => {setReportAnswer(true)}}>{(reportAnswer) ? 'Reported' : 'Report'}</button> */}
       </span>
     </li>
   )

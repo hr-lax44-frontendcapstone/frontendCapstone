@@ -29,7 +29,6 @@ function QAMain(props) {
   function getQuestions(id) {
     axios.get(`${url}/qa/questions?count=100&product_id=${id}`, auth)
       .then((response) => {
-        // sort questions by helpfullness
         var sortedQuestions = response.data.results.sort(function (a, b) {
           return b.question_helpfulness - a.question_helpfulness;
         });

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { FaSistrix } from 'react-icons/fa';
 
 function SearchBar(props){
 
   function getSearchPhrase(event){
     props.searchHandler(event.target.value)
-    // props.setSearchPhrase(event.target.value)
   }
 
   return(
@@ -16,7 +14,6 @@ function SearchBar(props){
         value={props.searchPhrase}
         onChange={getSearchPhrase}
       />
-      {/* <FaSistrix /> */}
     </div>
   )
 }

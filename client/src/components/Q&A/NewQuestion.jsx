@@ -71,15 +71,7 @@ function NewQuestion(props) {
           console.log(response.data)
           // shallow render of the question
           props.setTemporaryQuestion(values.newQuestion)
-          // //reset values & errors
-          // setValues({
-          //   newQuestion: "",
-          //   nickname: "",
-          //   email: ""
-          // });
-          // setErrors({});
           resetValAndErr()
-          // close modal
           setModalIsOpen(false)
         })
         .catch((err) => {
@@ -96,26 +88,20 @@ function NewQuestion(props) {
 
     if (!values.newQuestion) {
       err.newQuestion = "Question is required"
-      // err.newQuestion = "Question"
     } else if (values.newQuestion.length > 1000) {
-      // err.newQuestion = "Question"
       err.NewQuestion = "Question character count cannot exceed 1000 characters"
     }
 
     if (!values.nickname.trim()) {
       err.nickname = "Nickname is required"
-      // err.nickname = "Nickname"
     } else if (values.nickname.length > 60) {
-      // err.newQuestion = "Nickname"
       err.newQuestion = "Nickname character count cannot exceed 60 characters"
     }
 
     if (!values.email) {
       err.email = "Email is required"
-      // err.email = "Email"
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
       err.email = "Email address is invalid"
-      // err.email = "Email"
     } else if (values.email.length > 60) {
       err.email = "Email character count cannot exceed 60 characters"
     }
@@ -129,7 +115,6 @@ function NewQuestion(props) {
       <Modal
         id="QModal"
         isOpen={modalIsOpen} onRequestClose={() => {setModalIsOpen(false); resetValAndErr()}}
-        // style={Modal.defaultStyles}
         style={customStyles}
       >
         <div className="modalHeader">
@@ -137,18 +122,23 @@ function NewQuestion(props) {
           <h6>About the {props.productName}</h6>
         </div>
 
-        <form className="QModalForm" onSubmit={handleSubmit}>
+        <form
+          className="QModalForm"
+          onSubmit={handleSubmit}
+        >
+
           {(JSON.stringify(errors) !== "{}") && <p className="inputsub" style={{ color: "red" }}>You must enter the following:</p>}
+
           <div className="inputRow">
             <label>Your Question *</label>
             <input
-              type="text" placeholder=""
+              type="text"
+              placeholder=""
               name="newQuestion"
               value={values.newQuestion}
               onChange={handleChange}
             />
             {errors.newQuestion && <p className="inputsub" style={{ color: "red" }}>{errors.newQuestion}</p>}
-            {/* <br></br> */}
           </div>
 
           <div className="inputRow">
@@ -162,14 +152,12 @@ function NewQuestion(props) {
             />
             {errors.nickname && <p className="inputsub" style={{ color: "red" }}>{errors.nickname}</p>}
             <p className="inputsub">For privacy reasons, do not use your full name or email address</p>
-            {/* <br></br> */}
           </div>
 
           <div className="inputRow">
             <label>Your email *</label>
             <input
               type="text"
-              // placeholder="Why did you like the product or not?"
               placeholder="Example: jackson11@gmail.com"
               name="email"
               value={values.email}
@@ -177,7 +165,6 @@ function NewQuestion(props) {
             />
             {errors.email && <p className="inputsub" style={{ color: "red" }}>{errors.email}</p>}
             <p className="inputsub">For authentication reasons, you will not be emailed</p>
-            {/* <br></br> */}
           </div>
 
           <div className="modalFooter">
@@ -185,8 +172,11 @@ function NewQuestion(props) {
               className="functional-btn"
               type="submit"
             />
-            <button className="functional-btn"
-            type="button" onClick={() => { setModalIsOpen(false); resetValAndErr()}}>Close</button>
+            <button
+              className="functional-btn"
+              type="button"
+              onClick={() => { setModalIsOpen(false); resetValAndErr()}}
+            >Close</button>
           </div>
 
         </form>

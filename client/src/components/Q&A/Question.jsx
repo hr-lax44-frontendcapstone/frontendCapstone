@@ -49,8 +49,6 @@ function Question(props) {
     };
     axios.put(`${url}/qa/${event.target.name}/${id}/helpful`, newHelpfulness, auth)
       .then((response) => {
-        //re-render with fresh data (commented out because I am doing a surface level update)
-        // props.getQuestions();
         console.log('updated')
       })
       .catch((err) => {
@@ -71,7 +69,6 @@ function Question(props) {
           >Yes</button>
           ({!markedHelpful ? props.question.question_helpfulness : props.question.question_helpfulness + 1})
           |
-          {/* <button className="link-button">Add Answer</button> */}
           <NewAnswer
             productName={props.productName} question={props.question} setTemporaryAnswer={setTemporaryAnswer}
             setTemporaryNickname={setTemporaryNickname}
